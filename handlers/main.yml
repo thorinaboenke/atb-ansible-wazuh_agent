@@ -1,0 +1,7 @@
+#SPDX-License-Identifier: MIT-0
+---
+# handlers file for wazuh-agent
+- name: wazuh-agent restart
+  service:
+    name:  wazuh-agent
+    state: restarted

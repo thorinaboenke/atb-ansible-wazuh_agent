@@ -1,0 +1,12 @@
+#SPDX-License-Identifier: MIT-0
+---
+# defaults file for wazuh-agent
+wazuh_repokey: "https://packages.wazuh.com/key/GPG-KEY-WAZUH"
+wazuh_repourl: "https://packages.wazuh.com/4.x/apt/ stable main"
+# wazuh_localfiles:
+#   - log_format: apache
+#     location: /var/log/apache2/access.log
+#   - log_format: json
+#     location: /var/log/suricata/eve.json
+wazuh_localfiles: []
+wazuh_manager: false

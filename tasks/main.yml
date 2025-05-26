@@ -1,0 +1,41 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for wazuh-agent
+
+- name: Manager-IP must be configured
+  ansible.builtin.assert:
+    that: wazuh_manager != False
+
+- name: Prepare wazuh-repository
+  block:
+    - name: wazuh | no apt key
+      ansible.builtin.get_url:
+        url: "{{wazuh_repokey}}"
+        dest: "/opt/wazuh.gpg"
+
+    - name: wazuh | import apt key
+      ansible.builtin.shell:
+        cmd: cat /opt/wazuh.gpg | gpg --no-default-keyring --keyring gnupg-ring:/usr/share/keyrings/wazuh.gpg --import && chmod 644 /usr/share/keyrings/wazuh.gpg
+        creates: /usr/share/keyrings/wazuh.gpg
+
+    - name: wazuh | apt source
+      ansible.builtin.apt_repository:
+        repo: "deb [signed-by=/usr/share/keyrings/wazuh.gpg] {{wazuh_repourl}}"
+        state: present
+
+- name: Install wazuh-agent
+  ansible.builtin.apt:
+    name: wazuh-agent
+    state: present
+
+- name: Configure wazuh-agent
+  ansible.builtin.template:
+    src: ossec.conf.j2
+    dest: /var/ossec/etc/ossec.conf
+    owner: root
+    group: wazuh
+    mode: '0644'
+  notify: wazuh-agent restart
+
+- name: Start wazuh-agent
+  service: name=wazuh-agent.service state=started enabled=yes
