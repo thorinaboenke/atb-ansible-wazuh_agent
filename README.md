@@ -35,7 +35,7 @@ Example Playbook
 ----------------
 
 ```
-- hosts: localhos
+- hosts: localhost
   become: true
   roles:
     - role: wazuh_agent
